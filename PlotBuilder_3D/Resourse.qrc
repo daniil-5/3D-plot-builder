@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>Shaders/fshader.glsl</file>
+        <file>Shaders/vshader.glsl</file>
+    </qresource>
+    <qresource prefix="/savings">
+        <file>Savings/surfaces.txt</file>
+    </qresource>
+</RCC>
