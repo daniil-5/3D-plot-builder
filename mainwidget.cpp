@@ -37,7 +37,6 @@ void mainwidget::mouseReleaseEvent(QMouseEvent *e)
 
     // Calculate new rotation axis as weighted sum
     rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
-
     // Increase angular speed
     angularSpeed += acc;
 
