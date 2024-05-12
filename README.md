@@ -32,6 +32,6 @@ This project is a 3D plot builder developed using Qt, C++, and OpenGL. It allows
 
 1. Clone the repository:
 2. Navigate to the project directory:
-3. 3. Build the project using Qt's build system (qmake):
+3. Build the project using Qt's build system (qmake):
 
 
