@@ -60,7 +60,11 @@ void Surface::setLayout(int index)
 void Surface::removeSurface(int index)
 {
     if(index < _vertex.size())
+    {
         _vertex.removeAt(index);
+        _expressions.removeAt(index);
+        _colors.removeAt(index);
+    }
 }
 
 QVector<QString> &Surface::getExpressions()
@@ -155,7 +159,12 @@ void Surface::addSurface(std::string expr)
             float y = yStart + i * yStep;
 
             float z = parser.getvalue(x,y);
-
+            if (std::isinf(z) || std::isnan(z) || abs(z) > 100 )
+            {
+                // Handle the case where z is inf or nan
+                // For example, you can set z to a default value
+                z = 0.0f;
+            }
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
@@ -416,6 +425,7 @@ void Surface::hide(int index)
 
 void Surface::saveToFile()
 {
+    clearFile();
     QFile file(FILE_NAME);
     file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -472,6 +482,5 @@ Surface::Surface()
    loadFromFile();
 }
 
-Surface::~Surface()
-{}
+Surface::~Surface() = default;
 

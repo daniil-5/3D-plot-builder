@@ -11,7 +11,6 @@ attribute vec4 a_position;
 attribute mediump vec4 aColor;
 varying mediump vec4 vColor;
 
-//! [0]
 void main()
 {
     // Calculate vertex position in screen space
@@ -19,4 +18,4 @@ void main()
 
     vColor = aColor;
 }
-//! [0]
+

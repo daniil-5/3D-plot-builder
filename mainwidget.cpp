@@ -5,8 +5,15 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-const float MIN_SCALE = 11.0;
-const float MAX_SCALE = 0.2;
+const float MIN_SCALE = 15.0;
+const float MAX_SCALE = 0.1;
+
+const float SPEED_DECREASE = 0.998;
+const float MIN_SPEED = 0.01;
+
+const int TIMER_SPEED = 12;
+
+const float SCALE_FACTOR = 1.1;
 
 mainwidget::~mainwidget()
 {
@@ -48,26 +55,31 @@ void mainwidget::wheelEvent(QWheelEvent *e)
     {
         // Mouse wheel scrolled up, increase size or zoom in
         if (scale <= MIN_SCALE)
-            scale *= 1.1;
+        {
+            scale *= SCALE_FACTOR;
+        }
         qDebug()<<"Wheel is scrolling up";
     }
     else
     {
         if (scale >= MAX_SCALE)
-            scale /= 1.1;
+        {
+            scale /= SCALE_FACTOR;
+        }
         qDebug()<<"Wheel is scrolling down";
         // Mouse wheel scrolled down, decrease size or zoom out
     }
     update();
 }
 
-void mainwidget::timerEvent(QTimerEvent *)
+void mainwidget::timerEvent(QTimerEvent *timer)
 {
+    Q_UNUSED(timer);
     // Decrease angular speed (friction)
-    angularSpeed *= 0.998;
+    angularSpeed *= SPEED_DECREASE;
 
     // Stop rotation when speed goes below threshold
-    if (angularSpeed < 0.01)
+    if (angularSpeed < MIN_SPEED)
     {
         angularSpeed = 0.0;
     }
@@ -89,32 +101,40 @@ void mainwidget::initializeGL()
 
     initShaders();
     // Use QBasicTimer because its faster than QTimer
-    timer.start(12, this);
+    timer.start(TIMER_SPEED, this);
 }
 
 void mainwidget::initShaders()
 {
     // Compile vertex shader
     if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/Shaders/vshader.glsl"))
+    {
         close();
+    }
 
     // Compile fragment shader
     if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/Shaders/fshader.glsl"))
+    {
         close();
+    }
 
     // Link shader pipeline
     if (!program.link())
+    {
         close();
+    }
 
     // Bind shader pipeline for use
     if (!program.bind())
+    {
         close();
+    }
 }
 
 void mainwidget::resizeGL(int w, int h)
 {
     // Calculate aspect ratio
-    qreal aspect = qreal(w) / qreal(h ? h : 1);
+    qreal aspect = static_cast<qreal>(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
     const qreal zNear = 0.10, zFar = 20.0, fov = 45.0;
@@ -290,8 +310,8 @@ void mainwidget::drawAxes()
 void mainwidget::drawGridX()
 {
     // Define the range and step size for x and z
-    float yStart = -2.0f, yEnd = 2.0f, yStep = 0.1f;
-    float zStart = -2.0f, zEnd = 2.0f, zStep = 0.1f;
+    float yStart = -5.0f, yEnd = 5.0f, yStep = 0.1f;
+    float zStart = -5.0f, zEnd = 5.0f, zStep = 0.1f;
 
     // Generate a grid of lines
     std::vector<GLfloat> vertices;
@@ -357,8 +377,8 @@ void mainwidget::drawGridX()
 void mainwidget::drawGridY()
 {
     // Define the range and step size for x and z
-    float xStart = -2.0f, xEnd = 2.0f, xStep = 0.1f;
-    float zStart = -2.0f, zEnd = 2.0f, zStep = 0.1f;
+    float xStart = -5.0f, xEnd = 5.0f, xStep = 0.1f;
+    float zStart = -5.0f, zEnd = 5.0f, zStep = 0.1f;
 
     // Generate a grid of lines
     std::vector<GLfloat> vertices;

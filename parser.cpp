@@ -93,13 +93,10 @@ static std::vector<std::string> tokenize(std::string expression)
             }
             continue;
         }
-        if (isspace(c))
+        if (isspace(c) && !currentToken.empty())
         {
-            if (!currentToken.empty())
-            {
-                tokens.push_back(currentToken);
-                currentToken.clear();
-            }
+            tokens.push_back(currentToken);
+            currentToken.clear();
         }
         else if (isOperator(std::string(1,c)))
         {
@@ -108,7 +105,6 @@ static std::vector<std::string> tokenize(std::string expression)
                 tokens.push_back(currentToken);
                 currentToken.clear();
             }
-
             tokens.emplace_back(1, c);
         }
         else if (isnumber(c) || c == 'x' || c == 'y')
